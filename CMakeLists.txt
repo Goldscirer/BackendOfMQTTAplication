@@ -3,6 +3,6 @@ project(BackendOfMQTTAplication C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(BackendOfMQTTAplication main.c callback.h callback.c)
+add_executable(BackendOfMQTTAplication main.c callback.c)
 
-target_link_libraries(BackendOfMQTTAplication paho-mqtt3c)
+target_link_libraries(BackendOfMQTTAplication paho-mqtt3c json-c)

@@ -18,6 +18,7 @@ int main(int argc, char* argv[]) {
         printf("Failed to connect, return code %d\n", rc);
         exit(-1);
     }
+
     printf("Subscribing to topic %s\nfor client %s using QoS%d\n\n"
            "Press Q<Enter> to quit\n\n", TOPIC, CLIENTID, QOS);
 
@@ -29,4 +30,6 @@ int main(int argc, char* argv[]) {
 
     MQTTClient_disconnect(client, TIMEOUT);
     MQTTClient_destroy(&client);
+
+    return EXIT_SUCCESS;
 }
