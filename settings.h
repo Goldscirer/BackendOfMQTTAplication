@@ -7,4 +7,7 @@
 #define QOS        1
 #define TIMEOUT    10000L
 
+#define LIGHT       21
+#define GATE        18
+
 #endif //MQTT_SETTINGS_H

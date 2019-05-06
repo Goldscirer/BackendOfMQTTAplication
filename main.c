@@ -1,14 +1,26 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <MQTTClient.h>
+#include <pigpio.h>
+#include <signal.h>
 #include "settings.h"
 #include "callback.h"
 
-int main(int argc, char* argv[]) {
+static volatile int keepRunning = 1;
+
+void intHandler(int signum) {
+    if (signum == SIGINT) {
+        keepRunning = 0;
+    }
+}
+
+int main(int argc, char *argv[]) {
     MQTTClient client;
     MQTTClient_connectOptions conn_opts = MQTTClient_connectOptions_initializer;
     int rc;
-    int ch;
+
+    if (gpioInitialise() < 0)
+        return 1;
 
     MQTTClient_create(&client, ADDRESS, CLIENTID, MQTTCLIENT_PERSISTENCE_NONE, NULL);
 
@@ -20,16 +32,20 @@ int main(int argc, char* argv[]) {
     }
 
     printf("Subscribing to topic %s\nfor client %s using QoS%d\n\n"
-           "Press Q<Enter> to quit\n\n", TOPIC, CLIENTID, QOS);
+           "Press CTRL+C to quit\n\n", TOPIC, CLIENTID, QOS);
 
     MQTTClient_subscribe(client, TOPIC, QOS);
 
-    do {
-        ch = getchar();
-    } while(ch!='Q' && ch != 'q');
+    signal(SIGINT, intHandler);
+
+    while (keepRunning) {
+
+    }
 
     MQTTClient_disconnect(client, TIMEOUT);
     MQTTClient_destroy(&client);
+
+    gpioTerminate();
 
     return EXIT_SUCCESS;
 }
